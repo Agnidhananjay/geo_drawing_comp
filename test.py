@@ -83,7 +83,7 @@ def encode_image(image):
 def compare_drawings(previous_image_base64, current_image_base64):
     try:
         response = client.chat.completions.create(
-            model="o3",
+            model="o3-2025-04-16",
             messages=[
                 {
                     "role": "user",
