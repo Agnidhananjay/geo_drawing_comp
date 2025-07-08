@@ -83,7 +83,7 @@ def encode_image(image):
 def compare_drawings(previous_image_base64, current_image_base64):
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-o3",
             messages=[
                 {
                     "role": "user",
