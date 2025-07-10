@@ -146,7 +146,7 @@ if previous_image and current_image:
     # Comparison button
     if st.button("🔍 Start Comparison", type="primary", use_container_width=True):
         with st.spinner("Analyzing drawings... This may take a moment..."):
-            comparison_result = compare_drawings(previous_image, current_image)
+            comparison_result = compare_drawings(previous_image_pil, current_image_pil)
             st.session_state.comparison_result = comparison_result
             st.session_state.comparison_timestamp = datetime.datetime.now()
         
