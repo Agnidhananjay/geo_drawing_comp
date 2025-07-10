@@ -93,8 +93,13 @@ def compare_drawings(previous_image, current_image):
         model="gemini-2.5-pro",
         contents=contents,
         )
-        response = json.loads(response.text)
-        return response
+        response = response.text
+        resp_text = response.choices[0].message.content.strip()
+        if resp_text.startswith("```"):
+            resp_text = resp_text.replace("```", "").strip()
+            if resp_text.lower().startswith("json"):
+                resp_text = resp_text[4:].strip()
+        return resp_text
     except Exception as e:
         return f"Error occurred: {str(e)}"
 
