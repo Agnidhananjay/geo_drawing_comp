@@ -1,13 +1,15 @@
 import streamlit as st
 from openai import OpenAI
 import os
+import json
 import base64
 from dotenv import load_dotenv
 from PIL import Image
 from io import BytesIO
 from prompts import COMP_PROMPT
 import datetime
-
+from google import genai
+from google.genai import types
 # Load environment variables from .env file
 load_dotenv()
 
@@ -66,12 +68,12 @@ if 'comparison_timestamp' not in st.session_state:
 
 # Get OpenAI API Key from environment variable
 # 
-api_key = st.secrets["OPENAI_API_KEY"]
+api_key = st.secrets["GEMINI_API_KEY"]
 if not api_key:
-    st.error("Please set your OPENAI_API_KEY in the .env file")
+    st.error("Please set your GEMINI_API_KEY in the .env file")
     st.stop()
 
-client = OpenAI(api_key=api_key)
+client = genai.Client(api_key)
 
 # Function to encode image to base64
 def encode_image(image):
@@ -80,27 +82,18 @@ def encode_image(image):
     return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
 # Function to compare the drawings using OpenAI API
-def compare_drawings(previous_image_base64, current_image_base64):
+def compare_drawings(previous_image, current_image):
     try:
-        response = client.responses.create(
-            model="o3-pro-2025-06-10",
-            input=[
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "input_text", "text": COMP_PROMPT},
-                        {
-                            "type": "input_image",
-                            "image_url": f"data:image/jpeg;base64,{previous_image_base64}"
-                        },
-                        {
-                            "type": "input_image",
-                            "image_url": f"data:image/jpeg;base64,{current_image_base64}"
-                        }
-                    ]
-                }
-            ]
+        contents = [COMP_PROMPT]
+        contents.append(previous_image)
+        contents.append(current_image)
+
+
+        response = client.models.generate_content(
+        model="gemini-2.5-flash-preview-05-20",
+        contents=contents,
         )
+        response = json.loads(response.text)
         return response.output
     except Exception as e:
         return f"Error occurred: {str(e)}"
@@ -147,13 +140,13 @@ if previous_image and current_image:
         st.image(current_image_pil, caption="Current Version", use_container_width=True)
     
     # Encode images to base64
-    previous_image_base64 = encode_image(previous_image_pil)
-    current_image_base64 = encode_image(current_image_pil)
+    # previous_image_base64 = encode_image(previous_image_pil)
+    # current_image_base64 = encode_image(current_image_pil)
     
     # Comparison button
     if st.button("🔍 Start Comparison", type="primary", use_container_width=True):
         with st.spinner("Analyzing drawings... This may take a moment..."):
-            comparison_result = compare_drawings(previous_image_base64, current_image_base64)
+            comparison_result = compare_drawings(previous_image, current_image)
             st.session_state.comparison_result = comparison_result
             st.session_state.comparison_timestamp = datetime.datetime.now()
         
