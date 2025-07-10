@@ -94,7 +94,7 @@ def compare_drawings(previous_image, current_image):
         contents=contents,
         )
         response = json.loads(response.text)
-        return response.output
+        return response
     except Exception as e:
         return f"Error occurred: {str(e)}"
 
