@@ -234,6 +234,6 @@ with st.sidebar:
 # Footer
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #888;'>Powered by OpenAI GPT-4 Vision</p>",
+    "<p style='text-align: center; color: #888;'>Powered by OpenAI o3-pro Vision</p>",
     unsafe_allow_html=True
 )
