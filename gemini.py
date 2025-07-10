@@ -90,7 +90,7 @@ def compare_drawings(previous_image, current_image):
 
 
         response = client.models.generate_content(
-        model="gemini-2.5-flash-preview-05-20",
+        model="gemini-2.5-pro",
         contents=contents,
         )
         response = json.loads(response.text)
