@@ -73,7 +73,7 @@ if not api_key:
     st.error("Please set your GEMINI_API_KEY in the .env file")
     st.stop()
 
-client = genai.Client(api_key)
+client = genai.Client(api_key=api_key)
 
 # Function to encode image to base64
 def encode_image(image):
@@ -168,28 +168,28 @@ if st.session_state.comparison_result:
         st.markdown(st.session_state.comparison_result)
         st.markdown('</div>', unsafe_allow_html=True)
     
-    # # Download button for the results
-    # col1, col2, col3 = st.columns([1, 1, 2])
-    # with col1:
-    #     filename, content = save_comparison_to_file(
-    #         st.session_state.comparison_result,
-    #         st.session_state.comparison_timestamp
-    #     )
-    #     st.download_button(
-    #         label="📥 Download Results (Markdown)",
-    #         data=content,
-    #         file_name=filename,
-    #         mime="text/markdown"
-    #     )
+    # Download button for the results
+    col1, col2, col3 = st.columns([1, 1, 2])
+    with col1:
+        filename, content = save_comparison_to_file(
+            st.session_state.comparison_result,
+            st.session_state.comparison_timestamp
+        )
+        st.download_button(
+            label="📥 Download Results (Markdown)",
+            data=content,
+            file_name=filename,
+            mime="text/markdown"
+        )
     
-    # with col2:
-    #     # Also provide as plain text
-    #     st.download_button(
-    #         label="📥 Download Results (Text)",
-    #         data=content,
-    #         file_name=filename.replace('.md', '.txt'),
-    #         mime="text/plain"
-    #     )
+    with col2:
+        # Also provide as plain text
+        st.download_button(
+            label="📥 Download Results (Text)",
+            data=content,
+            file_name=filename.replace('.md', '.txt'),
+            mime="text/plain"
+        )
 
 # Sidebar for additional options
 with st.sidebar:
