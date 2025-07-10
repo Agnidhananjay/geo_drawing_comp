@@ -88,16 +88,16 @@ def compare_drawings(previous_image_base64, current_image_base64):
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": COMP_PROMPT},
+                        {"type": "input_text", "text": COMP_PROMPT},
                         {
-                            "type": "image_url",
+                            "type": "input_image",
                             "image_url": {
                                 "url": f"data:image/jpeg;base64,{previous_image_base64}",
                                 "detail": "high"
                             }
                         },
                         {
-                            "type": "image_url",
+                            "type": "input_image",
                             "image_url": {
                                 "url": f"data:image/jpeg;base64,{current_image_base64}",
                                 "detail": "high"
