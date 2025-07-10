@@ -101,7 +101,7 @@ def compare_drawings(previous_image_base64, current_image_base64):
                 }
             ]
         )
-        return response.choices[0].message.content
+        return response
     except Exception as e:
         return f"Error occurred: {str(e)}"
 
