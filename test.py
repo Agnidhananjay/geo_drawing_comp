@@ -82,7 +82,7 @@ def encode_image(image):
 # Function to compare the drawings using OpenAI API
 def compare_drawings(previous_image_base64, current_image_base64):
     try:
-        response = client.chat.completions.create(
+        response = client.responses.create(
             model="o3-pro-2025-06-10",
             messages=[
                 {
