@@ -65,37 +65,38 @@ st.set_page_config(
 # Custom CSS for better table rendering
 st.markdown("""
 <style>
-    /* Improve table styling */
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin: 20px 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Improve table styling - subtle and integrated */
+    .stMarkdown table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        margin: 15px 0 !important;
+        font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif !important;
+        background-color: transparent !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
     }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 12px 8px;
-        text-align: left;
-        vertical-align: top;
+    .stMarkdown th, .stMarkdown td {
+        border: 1px solid rgba(250, 250, 250, 0.1) !important;
+        padding: 10px 12px !important;
+        text-align: left !important;
+        vertical-align: top !important;
+        color: inherit !important;
+        background-color: rgba(255, 255, 255, 0.02) !important;
     }
-    th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-        color: #333;
+    .stMarkdown th {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        font-weight: 600 !important;
+        color: inherit !important;
+        border-bottom: 2px solid rgba(250, 250, 250, 0.15) !important;
     }
-    tr:nth-child(even) {
-        background-color: #f9f9f9;
+    .stMarkdown tr:nth-child(even) td {
+        background-color: rgba(255, 255, 255, 0.04) !important;
     }
-    tr:hover {
-        background-color: #f5f5f5;
+    .stMarkdown tr:hover td {
+        background-color: rgba(255, 255, 255, 0.08) !important;
     }
-    /* Style for comparison results container */
-    .comparison-results {
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 20px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    .stMarkdown tr:hover th {
+        background-color: rgba(255, 255, 255, 0.12) !important;
     }
     /* Improve heading styles */
     h1 {
@@ -230,9 +231,7 @@ if st.session_state.comparison_result:
     results_container = st.container()
     with results_container:
         # Use markdown to properly render the formatted content
-        st.markdown('<div class="comparison-results">', unsafe_allow_html=True)
         st.markdown(st.session_state.comparison_result)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     # Download button for the results
     col1, col2, col3 = st.columns([1, 1, 2])
@@ -287,6 +286,6 @@ with st.sidebar:
 # Footer
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #888;'>OpenAI GPT-o3-pro Vision 기반</p>",
+    "<p style='text-align: center; color: #888;'>OpenAI GPT-o3-Pro ;.'기반</p>",
     unsafe_allow_html=True
 )
