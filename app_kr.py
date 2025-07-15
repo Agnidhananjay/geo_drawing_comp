@@ -124,6 +124,7 @@ if 'comparison_timestamp' not in st.session_state:
     st.session_state.comparison_timestamp = None
 
 # Get OpenAI API Key from environment variable
+# 
 api_key = st.secrets["OPENAI_API_KEY"]
 if not api_key:
     st.error("환경 변수에서 OPENAI_API_KEY를 설정해 주세요")
@@ -140,30 +141,26 @@ def encode_image(image):
 # Function to compare the drawings using OpenAI API
 def compare_drawings(previous_image_base64, current_image_base64):
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
+        response = client.responses.create(
+            model="o3-pro-2025-06-10",
+            input=[
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": COMP_PROMPT},
+                        {"type": "input_text", "text": COMP_PROMPT},
                         {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:image/jpeg;base64,{previous_image_base64}"
-                            }
+                            "type": "input_image",
+                            "image_url": f"data:image/jpeg;base64,{previous_image_base64}"
                         },
                         {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:image/jpeg;base64,{current_image_base64}"
-                            }
+                            "type": "input_image",
+                            "image_url": f"data:image/jpeg;base64,{current_image_base64}"
                         }
                     ]
                 }
             ]
         )
-        return response.choices[0].message.content
+        return response.output[1].content[0].text
     except Exception as e:
         return f"오류가 발생했습니다: {str(e)}"
 
@@ -290,6 +287,6 @@ with st.sidebar:
 # Footer
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #888;'>OpenAI GPT-4 Vision 기반</p>",
+    "<p style='text-align: center; color: #888;'>OpenAI GPT-o3-pro Vision 기반</p>",
     unsafe_allow_html=True
 )

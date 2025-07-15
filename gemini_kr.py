@@ -133,8 +133,8 @@ if not api_key:
 
 client = genai.Client(api_key=api_key)
 
-# Function to convert PIL Image to base64 for Gemini
-def pil_to_base64(image):
+# Function to encode image to base64
+def encode_image(image):
     buffered = BytesIO()
     image.save(buffered, format="JPEG")
     return base64.b64encode(buffered.getvalue()).decode("utf-8")
@@ -142,28 +142,14 @@ def pil_to_base64(image):
 # Function to compare the drawings using Gemini API
 def compare_drawings(previous_image, current_image):
     try:
-        # Convert PIL images to base64
-        prev_base64 = pil_to_base64(previous_image)
-        curr_base64 = pil_to_base64(current_image)
-        
-        # Create content with text and images
-        contents = [
-            COMP_PROMPT,
-            {
-                "mime_type": "image/jpeg",
-                "data": prev_base64
-            },
-            {
-                "mime_type": "image/jpeg", 
-                "data": curr_base64
-            }
-        ]
+        contents = [COMP_PROMPT]
+        contents.append(previous_image)
+        contents.append(current_image)
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash-exp",
-            contents=contents,
+        model="gemini-2.5-pro",
+        contents=contents,
         )
-        
         resp_text = response.text.strip()
         if resp_text.startswith("```"):
             resp_text = resp_text.replace("```", "").strip()
@@ -292,6 +278,6 @@ with st.sidebar:
 # Footer
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #888;'>Google Gemini 2.0 Flash 기반</p>",
+    "<p style='text-align: center; color: #888;'>Google Gemini 2.5 pro 기반</p>",
     unsafe_allow_html=True
 )
