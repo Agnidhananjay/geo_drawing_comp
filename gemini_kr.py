@@ -68,36 +68,51 @@ st.set_page_config(
 st.markdown("""
 <style>
     /* Improve table styling */
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin: 20px 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    .comparison-results table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        margin: 20px 0 !important;
+        font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif !important;
+        background-color: white !important;
     }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 12px 8px;
-        text-align: left;
-        vertical-align: top;
+    .comparison-results th, 
+    .comparison-results td {
+        border: 1px solid #ddd !important;
+        padding: 12px 8px !important;
+        text-align: left !important;
+        vertical-align: top !important;
+        color: #333 !important;
+        background-color: transparent !important;
     }
-    th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-        color: #333;
+    .comparison-results th {
+        background-color: #f2f2f2 !important;
+        font-weight: bold !important;
+        color: #333 !important;
     }
-    tr:nth-child(even) {
-        background-color: #f9f9f9;
+    .comparison-results tr:nth-child(even) td {
+        background-color: #f9f9f9 !important;
+        color: #333 !important;
     }
-    tr:hover {
-        background-color: #f5f5f5;
+    .comparison-results tr:hover td {
+        background-color: #e8f4fd !important;
+        color: #333 !important;
+    }
+    .comparison-results tr:hover th {
+        background-color: #e0e0e0 !important;
+        color: #333 !important;
     }
     /* Style for comparison results container */
     .comparison-results {
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 20px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa !important;
+        padding: 20px !important;
+        border-radius: 10px !important;
+        margin-top: 20px !important;
+        font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif !important;
+    }
+    .comparison-results p,
+    .comparison-results div,
+    .comparison-results span {
+        color: #333 !important;
     }
     /* Improve heading styles */
     h1 {
@@ -115,6 +130,13 @@ st.markdown("""
     /* Korean font support */
     * {
         font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif;
+    }
+    /* Fix any Streamlit default overrides */
+    .stMarkdown table {
+        border-collapse: collapse !important;
+    }
+    .stMarkdown td, .stMarkdown th {
+        color: #333 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -278,6 +300,6 @@ with st.sidebar:
 # Footer
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #888;'>Google Gemini 2.5 pro 기반</p>",
+    "<p style='text-align: center; color: #888;'>Google Gemini 2.0 Flash 기반</p>",
     unsafe_allow_html=True
 )
