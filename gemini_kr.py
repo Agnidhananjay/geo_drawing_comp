@@ -67,16 +67,15 @@ st.set_page_config(
 # Custom CSS for better table rendering
 st.markdown("""
 <style>
-    /* Improve table styling */
-    .comparison-results table {
+    /* Improve table styling - target tables directly */
+    table {
         border-collapse: collapse !important;
         width: 100% !important;
         margin: 20px 0 !important;
         font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif !important;
         background-color: transparent !important;
     }
-    .comparison-results th, 
-    .comparison-results td {
+    th, td {
         border: 1px solid #ddd !important;
         padding: 12px 8px !important;
         text-align: left !important;
@@ -84,35 +83,22 @@ st.markdown("""
         color: #333 !important;
         background-color: white !important;
     }
-    .comparison-results th {
+    th {
         background-color: #f2f2f2 !important;
         font-weight: bold !important;
         color: #333 !important;
     }
-    .comparison-results tr:nth-child(even) td {
+    tr:nth-child(even) td {
         background-color: #f9f9f9 !important;
         color: #333 !important;
     }
-    .comparison-results tr:hover td {
+    tr:hover td {
         background-color: #e8f4fd !important;
         color: #333 !important;
     }
-    .comparison-results tr:hover th {
+    tr:hover th {
         background-color: #e0e0e0 !important;
         color: #333 !important;
-    }
-    /* Style for comparison results container - minimal styling */
-    .comparison-results {
-        padding: 10px 0 !important;
-        margin-top: 20px !important;
-        font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif !important;
-        background-color: transparent !important;
-        border-radius: 0 !important;
-    }
-    .comparison-results p,
-    .comparison-results div,
-    .comparison-results span {
-        color: inherit !important;
     }
     /* Improve heading styles */
     h1 {
@@ -243,9 +229,7 @@ if st.session_state.comparison_result:
     results_container = st.container()
     with results_container:
         # Use markdown to properly render the formatted content
-        st.markdown('<div class="comparison-results">', unsafe_allow_html=True)
         st.markdown(st.session_state.comparison_result)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     # Download button for the results
     col1, col2, col3 = st.columns([1, 1, 2])
@@ -300,6 +284,6 @@ with st.sidebar:
 # Footer
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #888;'>Google Gemini 2.5-pro 기반</p>",
+    "<p style='text-align: center; color: #888;'>Google Gemini 2.5 Pro 기반</p>",
     unsafe_allow_html=True
 )
