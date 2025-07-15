@@ -73,7 +73,7 @@ st.markdown("""
         width: 100% !important;
         margin: 20px 0 !important;
         font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif !important;
-        background-color: white !important;
+        background-color: transparent !important;
     }
     .comparison-results th, 
     .comparison-results td {
@@ -82,7 +82,7 @@ st.markdown("""
         text-align: left !important;
         vertical-align: top !important;
         color: #333 !important;
-        background-color: transparent !important;
+        background-color: white !important;
     }
     .comparison-results th {
         background-color: #f2f2f2 !important;
@@ -101,18 +101,18 @@ st.markdown("""
         background-color: #e0e0e0 !important;
         color: #333 !important;
     }
-    /* Style for comparison results container */
+    /* Style for comparison results container - minimal styling */
     .comparison-results {
-        background-color: #f8f9fa !important;
-        padding: 20px !important;
-        border-radius: 10px !important;
+        padding: 10px 0 !important;
         margin-top: 20px !important;
         font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif !important;
+        background-color: transparent !important;
+        border-radius: 0 !important;
     }
     .comparison-results p,
     .comparison-results div,
     .comparison-results span {
-        color: #333 !important;
+        color: inherit !important;
     }
     /* Improve heading styles */
     h1 {
@@ -300,6 +300,6 @@ with st.sidebar:
 # Footer
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #888;'>Google Gemini 2.0 Flash 기반</p>",
+    "<p style='text-align: center; color: #888;'>Google Gemini 2.5-pro 기반</p>",
     unsafe_allow_html=True
 )
