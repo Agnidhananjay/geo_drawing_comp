@@ -67,38 +67,38 @@ st.set_page_config(
 # Custom CSS for better table rendering
 st.markdown("""
 <style>
-    /* Improve table styling - target tables directly */
-    table {
+    /* Improve table styling - subtle and integrated */
+    .stMarkdown table {
         border-collapse: collapse !important;
         width: 100% !important;
-        margin: 20px 0 !important;
+        margin: 15px 0 !important;
         font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif !important;
         background-color: transparent !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
     }
-    th, td {
-        border: 1px solid #ddd !important;
-        padding: 12px 8px !important;
+    .stMarkdown th, .stMarkdown td {
+        border: 1px solid rgba(250, 250, 250, 0.1) !important;
+        padding: 10px 12px !important;
         text-align: left !important;
         vertical-align: top !important;
-        color: #333 !important;
-        background-color: white !important;
+        color: inherit !important;
+        background-color: rgba(255, 255, 255, 0.02) !important;
     }
-    th {
-        background-color: #f2f2f2 !important;
-        font-weight: bold !important;
-        color: #333 !important;
+    .stMarkdown th {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        font-weight: 600 !important;
+        color: inherit !important;
+        border-bottom: 2px solid rgba(250, 250, 250, 0.15) !important;
     }
-    tr:nth-child(even) td {
-        background-color: #f9f9f9 !important;
-        color: #333 !important;
+    .stMarkdown tr:nth-child(even) td {
+        background-color: rgba(255, 255, 255, 0.04) !important;
     }
-    tr:hover td {
-        background-color: #e8f4fd !important;
-        color: #333 !important;
+    .stMarkdown tr:hover td {
+        background-color: rgba(255, 255, 255, 0.08) !important;
     }
-    tr:hover th {
-        background-color: #e0e0e0 !important;
-        color: #333 !important;
+    .stMarkdown tr:hover th {
+        background-color: rgba(255, 255, 255, 0.12) !important;
     }
     /* Improve heading styles */
     h1 {
@@ -116,13 +116,6 @@ st.markdown("""
     /* Korean font support */
     * {
         font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif;
-    }
-    /* Fix any Streamlit default overrides */
-    .stMarkdown table {
-        border-collapse: collapse !important;
-    }
-    .stMarkdown td, .stMarkdown th {
-        color: #333 !important;
     }
 </style>
 """, unsafe_allow_html=True)
