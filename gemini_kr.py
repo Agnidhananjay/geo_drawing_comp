@@ -12,8 +12,8 @@ from google.genai import types
 # Load environment variables from .env file
 load_dotenv()
 
-# Updated Korean prompt for table format
-COMP_PROMPT = """제공된 두 도면(첫 번째는 변경 전, 두 번째는 변경 후)을 분석하여 지반공학 및 토공 전문가의 관점에서 다음 항목들의 차이점을 **표 형식으로** 분석해 주세요.
+# Original Korean prompt for table format (Architecture & Engineering)
+COMP_PROMPT_ARCH = """제공된 두 도면(첫 번째는 변경 전, 두 번째는 변경 후)을 분석하여 지반공학 및 토공 전문가의 관점에서 다음 항목들의 차이점을 **표 형식으로** 분석해 주세요.
 
 다음과 같은 **마크다운 표 형식**으로 응답해 주세요:
 
@@ -56,6 +56,72 @@ COMP_PROMPT = """제공된 두 도면(첫 번째는 변경 전, 두 번째는 �
    - 기호 위치 변경, 범례 및 주석 추가/삭제 등
 
 변경사항이 없는 항목의 경우 "변화 없음"으로 표기해 주세요. 모든 응답은 한국어로 작성해 주세요."""
+
+# New prompt for Energy & Construction Technology
+COMP_PROMPT_ENERGY = """[발전분야 VP(Vendor Print)]
+1. 다음 설비 도면에서 아래의 정보를 추출해주세요. AI 기반 객체 인식과 텍스트 추론 기능을 모두 활용하여 구조적 데이터로 정리해주시기 바랍니다.
+
+① [NOTE 텍스트 영역 인식 및 해석]
+- 도면 내 Note 영역을 OCR 및 자연어처리 기반으로 인식 후,
+- 설계 기준이 되는 항목을 요약 정리해주세요. (예: Grouting 기준, 기준 Elevation, Anchor 설치 조건 등)
+
+② [Anchor Bolt 위치 및 치수 정보 추출]
+- 도면에 나타난 Anchor Bolt의 위치 좌표 (X, Y)와 치수 정보를 표 형태로 정리해주세요.
+- 변경 도면 비교를 위해 다음 항목 포함:
+    • Grid 기준 위치 
+    • 중심좌표 (mm)
+    • Foundation 외곽 치수 (mm x mm)
+    • Anchor Bolt 유무 및 개수
+    • Anchor Bolt 배치 치수 (Projection/Embed 길이, 개소수 등)
+
+③ [설계 필요 핵심사항 추출]
+- 아래 항목별로 도면 및 연결 문서(예: Loading Data PDF 등)에서 확인되는 값을 추출해주세요. 
+
+| 항목 | 내용 | 비고 |
+|------|------|------|
+| 기준점 좌표 | 도면 내 기준 Grid 또는 중심점 | |
+| Foundation Size | mm 단위 치수 (예: 2100 x 2100) | |
+| Weight | ton 단위 (연결된 하중 문서 참고) | |
+| Top of Concrete Level | FL 기준 Elevation (mm 또는 m) | |
+| Grouting 유무 및 두께 | 존재 여부 및 Thickness (mm) | |
+| Anchor Bolt | Type / Projection Length / Embedded Length / 개소수 / Bolt간 거리 | |
+| Box-out 유무 및 상세 | Box out 존재 여부 및 치수 (mm x mm) | |
+| 하중 | Dead Load / Live Load / Wind Load / Seismic Load (단위 포함) | |
+
+2️⃣ 변경 도면 비교 분석
+초도 도면 대비 2차 도면에서 변경된 부분을 비교해 주세요.
+
+**출력 형식:**
+- 변경 사항 비교 Table (Before / After / 변경내용)
+
+[화공분야 VP(Vendor Print)]
+1. 초도 도면 분석
+다음 항목을 도면에서 인식하여 설계 기준이 되는 내용으로 요약 정리해주세요.
+- Key Plan 정보
+- Equipment Dimension (장비 외형 치수)
+- Base Elevation (FL 기준 높이)
+- Anchor Bolt 정보 (개수, 크기, 간격)
+- Fixed Side / Sliding Side 위치
+- Weight 정보 (Empty, Erection, Operating, Test 각 하중)
+- 관련 주석/Note 사항
+
+**출력 형식:**
+- 항목별 Table
+- 도면 내 위치 표시 가능 시, 위치 좌표 또는 Grid 기준 포함
+
+2️⃣ 변경 도면 비교 분석
+초도 도면 대비 2차 도면에서 변경된 부분을 비교해 주세요.
+
+**중점 비교 항목:**
+- 외형 치수 변경 여부
+- Base Elevation의 변동 여부
+- Anchor Bolt 개수/간격/사이즈 변경 여부
+- Fixed/Sliding Side 위치 변경 여부
+- Weight 값 변경 여부
+- 기타 주석 및 Detail 상의 추가/삭제/수정사항
+
+**출력 형식:**
+- 변경 사항 비교 Table (Before / After / 변경내용)"""
 
 # Page configuration
 st.set_page_config(
@@ -117,6 +183,24 @@ st.markdown("""
     * {
         font-family: 'Segoe UI', 'Malgun Gothic', 'Apple Gothic', sans-serif;
     }
+    /* Radio button styling */
+    .stRadio > div {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+    }
+    .stRadio > div > label {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 1px solid rgba(250, 250, 250, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .stRadio > div > label:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(250, 250, 250, 0.2);
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -125,6 +209,8 @@ if 'comparison_result' not in st.session_state:
     st.session_state.comparison_result = None
 if 'comparison_timestamp' not in st.session_state:
     st.session_state.comparison_timestamp = None
+if 'selected_prompt_type' not in st.session_state:
+    st.session_state.selected_prompt_type = "Architecture & Engineering"
 
 # Get Gemini API Key from environment variable
 api_key = st.secrets["GEMINI_API_KEY"]
@@ -141,9 +227,15 @@ def encode_image(image):
     return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
 # Function to compare the drawings using Gemini API
-def compare_drawings(previous_image, current_image):
+def compare_drawings(previous_image, current_image, prompt_type):
     try:
-        contents = [COMP_PROMPT]
+        # Select the appropriate prompt based on user selection
+        if prompt_type == "Architecture & Engineering":
+            selected_prompt = COMP_PROMPT_ARCH
+        else:  # Energy & Construction Technology
+            selected_prompt = COMP_PROMPT_ENERGY
+            
+        contents = [selected_prompt]
         contents.append(previous_image)
         contents.append(current_image)
 
@@ -161,13 +253,35 @@ def compare_drawings(previous_image, current_image):
         return f"오류가 발생했습니다: {str(e)}"
 
 # Function to save comparison result to file
-def save_comparison_to_file(content, timestamp):
-    filename = f"도면비교결과_{timestamp.strftime('%Y%m%d_%H%M%S')}.md"
+def save_comparison_to_file(content, timestamp, prompt_type):
+    prompt_suffix = "arch_eng" if prompt_type == "Architecture & Engineering" else "energy_const"
+    filename = f"도면비교결과_{prompt_suffix}_{timestamp.strftime('%Y%m%d_%H%M%S')}.md"
     return filename, content
 
 # Main UI
 st.title("🏗️ 지반공학 도면 비교 도구")
 st.markdown("AI 기반 분석으로 지반공학 도면의 이전 버전과 현재 버전을 비교합니다")
+
+# Add prompt selection section
+st.markdown("### 📋 분석 유형 선택")
+prompt_type = st.radio(
+    "분석하고자 하는 도면 유형을 선택하세요:",
+    options=["Architecture & Engineering", "Energy & Construction Technology"],
+    index=0,
+    key="prompt_selection",
+    help="Architecture & Engineering: 지반공학 및 토공 전문 분석\nEnergy & Construction Technology: 발전/화공분야 VP 분석"
+)
+
+# Store selected prompt type in session state
+st.session_state.selected_prompt_type = prompt_type
+
+# Display selected analysis type information
+if prompt_type == "Architecture & Engineering":
+    st.info("🏗️ **지반공학 및 토공 전문 분석**: 위치/형상, 벽체공법, 지보공법, 굴착레벨, 구조부재사양, 시공순서 등을 분석합니다.")
+else:
+    st.info("⚡ **에너지 & 건설기술 분석**: VP(Vendor Print) 도면의 Anchor Bolt, Foundation, Weight, Elevation 등 발전/화공분야 설비정보를 분석합니다.")
+
+st.markdown("---")
 
 # Create two columns for file uploaders
 col1, col2 = st.columns(2)
@@ -202,9 +316,10 @@ if previous_image and current_image:
         st.image(current_image_pil, caption="변경 후 도면", use_container_width=True)
     
     # Comparison button
-    if st.button("🔍 비교 분석 시작", type="primary", use_container_width=True):
-        with st.spinner("도면을 분석하고 있습니다... 잠시만 기다려 주세요..."):
-            comparison_result = compare_drawings(previous_image_pil, current_image_pil)
+    button_text = f"🔍 비교 분석 시작 ({prompt_type})"
+    if st.button(button_text, type="primary", use_container_width=True):
+        with st.spinner(f"도면을 {prompt_type} 방식으로 분석하고 있습니다... 잠시만 기다려 주세요..."):
+            comparison_result = compare_drawings(previous_image_pil, current_image_pil, prompt_type)
             st.session_state.comparison_result = comparison_result
             st.session_state.comparison_timestamp = datetime.datetime.now()
         
@@ -216,7 +331,7 @@ if st.session_state.comparison_result:
     st.header("📊 비교 분석 결과")
     
     if st.session_state.comparison_timestamp:
-        st.caption(f"생성 시간: {st.session_state.comparison_timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
+        st.caption(f"생성 시간: {st.session_state.comparison_timestamp.strftime('%Y-%m-%d %H:%M:%S')} | 분석 유형: {st.session_state.selected_prompt_type}")
     
     # Create a container for the results with custom styling
     results_container = st.container()
@@ -229,7 +344,8 @@ if st.session_state.comparison_result:
     with col1:
         filename, content = save_comparison_to_file(
             st.session_state.comparison_result,
-            st.session_state.comparison_timestamp
+            st.session_state.comparison_timestamp,
+            st.session_state.selected_prompt_type
         )
         st.download_button(
             label="📥 결과 다운로드 (Markdown)",
@@ -250,16 +366,30 @@ if st.session_state.comparison_result:
 # Sidebar for additional options
 with st.sidebar:
     st.header("ℹ️ 정보")
-    st.markdown("""
-    이 도구는 지반공학 도면을 비교하여 다음 항목들을 분석합니다:
-    - 위치 및 형상 변화
-    - 벽체 공법 변화
-    - 지보 공법 변화
-    - 굴착 레벨 변화
-    - 구조 부재 사양 변화
-    - 시공 순서 변화
-    - 기타 도면 변화사항
-    """)
+    
+    if st.session_state.selected_prompt_type == "Architecture & Engineering":
+        st.markdown("""
+        **지반공학 및 토공 전문 분석**
+        이 도구는 지반공학 도면을 비교하여 다음 항목들을 분석합니다:
+        - 위치 및 형상 변화
+        - 벽체 공법 변화
+        - 지보 공법 변화
+        - 굴착 레벨 변화
+        - 구조 부재 사양 변화
+        - 시공 순서 변화
+        - 기타 도면 변화사항
+        """)
+    else:
+        st.markdown("""
+        **에너지 & 건설기술 분석**
+        이 도구는 발전/화공분야 VP 도면을 비교하여 다음 항목들을 분석합니다:
+        - NOTE 텍스트 영역 인식 및 해석
+        - Anchor Bolt 위치 및 치수 정보
+        - 설계 필요 핵심사항 추출
+        - Equipment Dimension 및 Base Elevation
+        - Weight 정보 및 하중 분석
+        - Fixed/Sliding Side 위치 분석
+        """)
     
     st.header("🔧 설정")
     if st.button("비교 결과 초기화"):
@@ -272,11 +402,29 @@ with st.sidebar:
     - 최상의 결과를 위해 고품질 이미지를 업로드하세요
     - 도면이 올바르게 방향이 맞춰져 있는지 확인하세요
     - 이미지의 텍스트가 선명하게 읽힐 수 있는지 확인하세요
+    - 분석 유형에 맞는 도면을 선택하세요
     """)
+    
+    st.header("🎯 분석 유형별 특징")
+    with st.expander("Architecture & Engineering"):
+        st.markdown("""
+        - 지반공학 및 토공 전문 분석
+        - 벽체/지보 공법 중심
+        - 굴착 레벨 및 구조 부재 분석
+        - 건축/토목 도면에 최적화
+        """)
+    
+    with st.expander("Energy & Construction Technology"):
+        st.markdown("""
+        - 발전분야 VP(Vendor Print) 분석
+        - Anchor Bolt 및 Foundation 중심
+        - 화공분야 장비 도면 분석
+        - Weight 및 하중 정보 추출
+        """)
 
 # Footer
 st.markdown("---")
 st.markdown(
-    "<p style='text-align: center; color: #888;'>Google Gemini 2.5 Pro 기반</p>",
+    "<p style='text-align: center; color: #888;'>Google Gemini 2.5 Pro 기반 | 다중 프롬프트 지원</p>",
     unsafe_allow_html=True
 )
