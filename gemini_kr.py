@@ -58,70 +58,59 @@ COMP_PROMPT_ARCH = """제공된 두 도면(첫 번째는 변경 전, 두 번째�
 변경사항이 없는 항목의 경우 "변화 없음"으로 표기해 주세요. 모든 응답은 한국어로 작성해 주세요."""
 
 # New prompt for Energy & Construction Technology
-COMP_PROMPT_ENERGY = """[발전분야 VP(Vendor Print)]
-1. 다음 설비 도면에서 아래의 정보를 추출해주세요. AI 기반 객체 인식과 텍스트 추론 기능을 모두 활용하여 구조적 데이터로 정리해주시기 바랍니다.
+COMP_PROMPT_ENERGY = """제공된 두 도면(첫 번째는 변경 전, 두 번째는 변경 후)을 분석하여 발전분야 및 화공분야 VP(Vendor Print) 전문가의 관점에서 다음 항목들의 차이점을 **표 형식으로** 분석해 주세요.
 
-① [NOTE 텍스트 영역 인식 및 해석]
-- 도면 내 Note 영역을 OCR 및 자연어처리 기반으로 인식 후,
-- 설계 기준이 되는 항목을 요약 정리해주세요. (예: Grouting 기준, 기준 Elevation, Anchor 설치 조건 등)
+**[발전분야 VP(Vendor Print) 비교 분석]**
 
-② [Anchor Bolt 위치 및 치수 정보 추출]
-- 도면에 나타난 Anchor Bolt의 위치 좌표 (X, Y)와 치수 정보를 표 형태로 정리해주세요.
-- 변경 도면 비교를 위해 다음 항목 포함:
-    • Grid 기준 위치 
-    • 중심좌표 (mm)
-    • Foundation 외곽 치수 (mm x mm)
-    • Anchor Bolt 유무 및 개수
-    • Anchor Bolt 배치 치수 (Projection/Embed 길이, 개소수 등)
+다음과 같은 **마크다운 표 형식**으로 응답해 주세요:
 
-③ [설계 필요 핵심사항 추출]
-- 아래 항목별로 도면 및 연결 문서(예: Loading Data PDF 등)에서 확인되는 값을 추출해주세요. 
+| 구분 | 변경 전 | 변경 후 | 변경 사항 설명 |
+|------|---------|---------|----------------|
+| 기준점 좌표 | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Foundation Size | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Weight | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Top of Concrete Level | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Grouting 유무 및 두께 | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Anchor Bolt 사양 | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Box-out 유무 및 상세 | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| 하중 정보 | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| NOTE 영역 변경사항 | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
 
-| 항목 | 내용 | 비고 |
-|------|------|------|
-| 기준점 좌표 | 도면 내 기준 Grid 또는 중심점 | |
-| Foundation Size | mm 단위 치수 (예: 2100 x 2100) | |
-| Weight | ton 단위 (연결된 하중 문서 참고) | |
-| Top of Concrete Level | FL 기준 Elevation (mm 또는 m) | |
-| Grouting 유무 및 두께 | 존재 여부 및 Thickness (mm) | |
-| Anchor Bolt | Type / Projection Length / Embedded Length / 개소수 / Bolt간 거리 | |
-| Box-out 유무 및 상세 | Box out 존재 여부 및 치수 (mm x mm) | |
-| 하중 | Dead Load / Live Load / Wind Load / Seismic Load (단위 포함) | |
+**[화공분야 VP(Vendor Print) 비교 분석]**
 
-2️⃣ 변경 도면 비교 분석
-초도 도면 대비 2차 도면에서 변경된 부분을 비교해 주세요.
+| 구분 | 변경 전 | 변경 후 | 변경 사항 설명 |
+|------|---------|---------|----------------|
+| Key Plan 정보 | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Equipment Dimension | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Base Elevation | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Anchor Bolt 정보 | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Fixed/Sliding Side | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| Weight 정보 | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
+| 관련 주석/Note | [변경 전 내용] | [변경 후 내용] | [변경사항 상세 설명] |
 
-**출력 형식:**
-- 변경 사항 비교 Table (Before / After / 변경내용)
+**분석할 주요 항목들:**
 
-[화공분야 VP(Vendor Print)]
-1. 초도 도면 분석
-다음 항목을 도면에서 인식하여 설계 기준이 되는 내용으로 요약 정리해주세요.
-- Key Plan 정보
-- Equipment Dimension (장비 외형 치수)
-- Base Elevation (FL 기준 높이)
-- Anchor Bolt 정보 (개수, 크기, 간격)
-- Fixed Side / Sliding Side 위치
-- Weight 정보 (Empty, Erection, Operating, Test 각 하중)
-- 관련 주석/Note 사항
+**1. [발전분야 VP 분석 항목]**
+   - **NOTE 텍스트 영역**: OCR 및 자연어처리 기반 인식 후 설계 기준 항목 비교 (Grouting 기준, 기준 Elevation, Anchor 설치 조건 등)
+   - **Anchor Bolt 정보**: 위치 좌표(X,Y), 치수 정보, Grid 기준 위치, 중심좌표(mm), Foundation 외곽 치수, 개수, 배치 치수(Projection/Embed 길이) 등
+   - **설계 핵심사항**: 기준점 좌표, Foundation Size(mm), Weight(ton), Top of Concrete Level(FL 기준), Grouting 두께(mm), Box-out 치수, 하중(Dead/Live/Wind/Seismic Load)
 
-**출력 형식:**
-- 항목별 Table
-- 도면 내 위치 표시 가능 시, 위치 좌표 또는 Grid 기준 포함
+**2. [화공분야 VP 분석 항목]**
+   - **장비 정보**: Key Plan 정보, Equipment Dimension(장비 외형 치수), Base Elevation(FL 기준 높이)
+   - **Anchor Bolt**: 개수, 크기, 간격, 배치 변경사항
+   - **고정/이동**: Fixed Side/Sliding Side 위치 변경
+   - **하중 정보**: Empty, Erection, Operating, Test 각 하중값 변화
+   - **주석 변경**: 관련 주석/Note 사항의 추가/삭제/수정
 
-2️⃣ 변경 도면 비교 분석
-초도 도면 대비 2차 도면에서 변경된 부분을 비교해 주세요.
+**3. [공통 분석 항목]**
+   - 도면 번호 및 리비전 변경사항
+   - 치수 및 좌표 변경 (mm 단위 정밀 분석)
+   - 범례 및 기호 변경사항
+   - 상세도 추가/삭제/수정사항
 
-**중점 비교 항목:**
-- 외형 치수 변경 여부
-- Base Elevation의 변동 여부
-- Anchor Bolt 개수/간격/사이즈 변경 여부
-- Fixed/Sliding Side 위치 변경 여부
-- Weight 값 변경 여부
-- 기타 주석 및 Detail 상의 추가/삭제/수정사항
-
-**출력 형식:**
-- 변경 사항 비교 Table (Before / After / 변경내용)"""
+변경사항이 없는 항목의 경우 "변화 없음"으로 표기해 주세요. 
+AI 기반 객체 인식과 텍스트 추론 기능을 모두 활용하여 구조적 데이터로 정리해주시기 바랍니다.
+모든 응답은 한국어로 작성해 주세요."""
 
 # Page configuration
 st.set_page_config(
